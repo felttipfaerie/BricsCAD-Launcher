@@ -5,7 +5,9 @@ param(
     [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string] $BricscadExe,
     [switch] $NoDesktop,
-    [switch] $NoStartMenu
+    [switch] $NoStartMenu,
+    [ValidateSet('Lite', 'Pro', 'BIM', 'Mech', 'Ult', 'All')]
+    [string[]] $DesktopEditions
 )
 
 Set-StrictMode -Version Latest
@@ -120,6 +122,28 @@ function New-Shortcut {
     $shortcut.Save()
 }
 
+function Select-DesktopEditions {
+    param([hashtable[]] $AvailableEditions)
+
+    Write-Host ''
+    Write-Host 'Choose the Desktop shortcuts to create:' -ForegroundColor Cyan
+    for ($index = 0; $index -lt $AvailableEditions.Count; $index++) {
+        Write-Host ("  {0}. {1}" -f ($index + 1), $AvailableEditions[$index].Label)
+    }
+    Write-Host '  A. All five shortcuts'
+    Write-Host '  N. No Desktop shortcuts (Start Menu only)'
+
+    while ($true) {
+        $answer = (Read-Host 'Enter numbers separated by commas, A, or N').Trim()
+        if ($answer -match '^(?i:a|all)$') { return @($AvailableEditions.Label) }
+        if ($answer -match '^(?i:n|none)$') { return @() }
+        if ($answer -match '^[1-5](\s*,\s*[1-5])*$') {
+            return @($answer -split ',' | ForEach-Object { $AvailableEditions[[int]$_.Trim() - 1].Label } | Select-Object -Unique)
+        }
+        Write-Host 'Invalid choice. Enter, for example: 1,3,5 — or A for all.' -ForegroundColor Yellow
+    }
+}
+
 function Get-BricscadV26ProfilesRoot {
     $bricscadRoot = 'HKCU:\Software\Bricsys\Bricscad'
     $versionKey = Get-ChildItem -LiteralPath $bricscadRoot -ErrorAction SilentlyContinue |
@@ -191,6 +215,15 @@ $editions = @(
     @{ Level = 'ultimate';   Label = 'Ult';  Color = '#00FF57'; Workspace = 'Ultimate' }
 )
 
+if ($NoDesktop) {
+    $selectedDesktopEditions = @()
+} elseif ($DesktopEditions) {
+    if ($DesktopEditions -contains 'All') { $selectedDesktopEditions = @($editions.Label) }
+    else { $selectedDesktopEditions = $DesktopEditions }
+} else {
+    $selectedDesktopEditions = Select-DesktopEditions -AvailableEditions $editions
+}
+
 $sourceIcon = [System.Drawing.Icon]::ExtractAssociatedIcon($bricscad)
 if (-not $sourceIcon) { throw "Could not extract the BricsCAD icon from '$bricscad'." }
 try {
@@ -203,7 +236,7 @@ try {
         $arguments = "/pr $($edition.Level) /P `"$profileName`""
         # The label must stay short on the desktop, exactly as requested.
         $name = $edition.Label
-        if (-not $NoDesktop) {
+        if ($selectedDesktopEditions -contains $edition.Label) {
             New-Shortcut -Path (Join-Path ([Environment]::GetFolderPath('Desktop')) "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD as $($edition.Level) with the $($edition.Workspace) workspace."
         }
         if (-not $NoStartMenu) {
