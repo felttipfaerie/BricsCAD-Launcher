@@ -5,6 +5,7 @@ param()
 $ErrorActionPreference = 'Stop'
 # Remove both the current short names and shortcuts produced by earlier releases.
 $names = @('Lite', 'Pro', 'BIM', 'Mech', 'Ult' | ForEach-Object { "$_.lnk" }) +
+         @('Lite', 'Pro', 'BIM', 'Mech', 'Ult' | ForEach-Object { "BricsCAD $_.lnk" }) +
          @('Lite', 'Pro', 'BIM', 'Mech', 'Ult' | ForEach-Object { "BricsCAD V26 $_.lnk" })
 $folders = @(
     [Environment]::GetFolderPath('Desktop'),

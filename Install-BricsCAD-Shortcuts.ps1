@@ -229,11 +229,17 @@ if ($NoDesktop) {
 $desktopFolder = [Environment]::GetFolderPath('Desktop')
 $startFolder = Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD Launcher'
 foreach ($edition in $editions) {
-    if ($selectedDesktopEditions -notcontains $edition.Label) {
-        $desktopShortcut = Join-Path $desktopFolder "$($edition.Label).lnk"
+    $legacyName = "$($edition.Label).lnk"
+    $shortcutName = "BricsCAD $($edition.Label).lnk"
+    # Always remove the legacy, unprefixed caption. Remove the current caption
+    # too when that edition is not selected.
+    $namesToRemove = @($legacyName)
+    if ($selectedDesktopEditions -notcontains $edition.Label) { $namesToRemove += $shortcutName }
+    foreach ($nameToRemove in $namesToRemove) {
+        $desktopShortcut = Join-Path $desktopFolder $nameToRemove
         if (Test-Path -LiteralPath $desktopShortcut -PathType Leaf) { Remove-Item -LiteralPath $desktopShortcut -Force }
         if (-not $NoStartMenu) {
-            $startShortcut = Join-Path $startFolder "$($edition.Label).lnk"
+            $startShortcut = Join-Path $startFolder $nameToRemove
             if (Test-Path -LiteralPath $startShortcut -PathType Leaf) { Remove-Item -LiteralPath $startShortcut -Force }
         }
     }
@@ -249,8 +255,7 @@ try {
 
         # No /B script is passed: BricsCAD can now open directly on Start.
         $arguments = "/pr $($edition.Level) /P `"$profileName`""
-        # The label must stay short on the desktop, exactly as requested.
-        $name = $edition.Label
+        $name = "BricsCAD $($edition.Label)"
         if ($selectedDesktopEditions -contains $edition.Label) {
             New-Shortcut -Path (Join-Path $desktopFolder "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD as $($edition.Level) with the $($edition.Workspace) workspace."
         }

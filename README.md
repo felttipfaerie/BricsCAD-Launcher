@@ -6,11 +6,11 @@ Desktop selection:
 
 | Shortcut | BricsCAD startup level | Workspace |
 | --- | --- | --- |
-| Lite | `lite` | 2D Drafting |
-| Pro | `pro` | 2D Drafting |
-| BIM | `bim` | BIM |
-| Mech | `mechanical` | Mechanical |
-| Ult | `ultimate` | Ultimate |
+| BricsCAD Lite | `lite` | 2D Drafting |
+| BricsCAD Pro | `pro` | 2D Drafting |
+| BricsCAD BIM | `bim` | BIM |
+| BricsCAD Mech | `mechanical` | Mechanical |
+| BricsCAD Ult | `ultimate` | Ultimate |
 
 The installer detects `bricscad.exe` inside the standard V26 installation folder.
 If BricsCAD is installed elsewhere, run PowerShell from this folder and use:
