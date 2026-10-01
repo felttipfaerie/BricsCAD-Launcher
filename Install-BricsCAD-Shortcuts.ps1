@@ -1,4 +1,4 @@
-# BricsCAD V26 edition launcher
+# BricsCAD edition launcher
 # Installs per-user shortcuts; no administrator rights or BricsCAD files are changed.
 [CmdletBinding()]
 param(
@@ -174,7 +174,7 @@ function Initialize-EditionProfile {
 }
 
 $bricscad = Find-BricscadV26 $BricscadExe
-$installRoot = Join-Path $env:LOCALAPPDATA 'BricsCAD V26 Launcher'
+$installRoot = Join-Path $env:LOCALAPPDATA 'BricsCAD Launcher'
 # New directory version forces Explorer to read the refreshed colours instead
 # of retaining cached artwork from the earlier Icons folder.
 $iconsDir = Join-Path $installRoot 'Icons-v4'
@@ -204,14 +204,14 @@ try {
         # The label must stay short on the desktop, exactly as requested.
         $name = $edition.Label
         if (-not $NoDesktop) {
-            New-Shortcut -Path (Join-Path ([Environment]::GetFolderPath('Desktop')) "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD V26 as $($edition.Level) with the $($edition.Workspace) workspace."
+            New-Shortcut -Path (Join-Path ([Environment]::GetFolderPath('Desktop')) "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD as $($edition.Level) with the $($edition.Workspace) workspace."
         }
         if (-not $NoStartMenu) {
-            $startFolder = Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD V26'
+            $startFolder = Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD Launcher'
             New-Item -ItemType Directory -Force -Path $startFolder | Out-Null
-            New-Shortcut -Path (Join-Path $startFolder "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD V26 as $($edition.Level) with the $($edition.Workspace) workspace."
+            New-Shortcut -Path (Join-Path $startFolder "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD as $($edition.Level) with the $($edition.Workspace) workspace."
         }
     }
 } finally { $sourceIcon.Dispose() }
 
-Write-Host "Installed BricsCAD V26 edition shortcuts for: $bricscad" -ForegroundColor Green
+Write-Host "Installed BricsCAD edition shortcuts for: $bricscad" -ForegroundColor Green

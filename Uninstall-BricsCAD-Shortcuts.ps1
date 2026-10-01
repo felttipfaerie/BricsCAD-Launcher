@@ -8,7 +8,7 @@ $names = @('Lite', 'Pro', 'BIM', 'Mech', 'Ult' | ForEach-Object { "$_.lnk" }) +
          @('Lite', 'Pro', 'BIM', 'Mech', 'Ult' | ForEach-Object { "BricsCAD V26 $_.lnk" })
 $folders = @(
     [Environment]::GetFolderPath('Desktop'),
-    (Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD V26')
+    (Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD Launcher')
 )
 foreach ($folder in $folders) {
     foreach ($name in $names) {
@@ -18,12 +18,12 @@ foreach ($folder in $folders) {
         }
     }
 }
-$startFolder = Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD V26'
+$startFolder = Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD Launcher'
 if ((Test-Path -LiteralPath $startFolder) -and -not (Get-ChildItem -LiteralPath $startFolder -Force | Select-Object -First 1)) {
     Remove-Item -LiteralPath $startFolder -Force
 }
-$installRoot = Join-Path $env:LOCALAPPDATA 'BricsCAD V26 Launcher'
+$installRoot = Join-Path $env:LOCALAPPDATA 'BricsCAD Launcher'
 if ((Test-Path -LiteralPath $installRoot) -and $PSCmdlet.ShouldProcess($installRoot, 'Remove generated startup scripts and icons')) {
     Remove-Item -LiteralPath $installRoot -Recurse -Force
 }
-Write-Host 'BricsCAD V26 edition shortcuts have been removed.' -ForegroundColor Green
+Write-Host 'BricsCAD edition shortcuts have been removed.' -ForegroundColor Green

@@ -1,4 +1,4 @@
-# BricsCAD V26 Edition Launcher
+# BricsCAD Edition Launcher
 
 Run `Install.cmd` to install five per-user shortcuts on the Desktop and in Start
 Menu > Programs > BricsCAD V26:
@@ -15,7 +15,7 @@ The installer detects `bricscad.exe` inside the standard V26 installation folder
 If BricsCAD is installed elsewhere, run PowerShell from this folder and use:
 
 ```powershell
-.\Install-BricsCAD-V26-Shortcuts.ps1 -BricscadExe 'D:\Apps\BricsCAD V26\bricscad.exe'
+.\Install-BricsCAD-Shortcuts.ps1 -BricscadExe 'D:\Apps\BricsCAD V26\bricscad.exe'
 ```
 
 It installs only to the current user profile; administrator access is not needed.
@@ -30,7 +30,7 @@ to refresh the generated icon files and shortcuts.
 
 To uninstall, double-click `Uninstall.cmd`. It removes only the five shortcuts
 created by this launcher plus its generated startup scripts and icons; it does
-not remove or modify BricsCAD itself. `Uninstall-BricsCAD-V26-Shortcuts.ps1`
+not remove or modify BricsCAD itself. `Uninstall-BricsCAD-Shortcuts.ps1`
 is also available for PowerShell or managed deployments.
 
 ## Technical notes
