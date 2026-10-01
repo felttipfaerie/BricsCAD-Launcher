@@ -224,6 +224,21 @@ if ($NoDesktop) {
     $selectedDesktopEditions = Select-DesktopEditions -AvailableEditions $editions
 }
 
+# Re-running the installer updates both locations to match the new selection.
+# Only the five launcher-owned, short-named shortcuts are touched.
+$desktopFolder = [Environment]::GetFolderPath('Desktop')
+$startFolder = Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD Launcher'
+foreach ($edition in $editions) {
+    if ($selectedDesktopEditions -notcontains $edition.Label) {
+        $desktopShortcut = Join-Path $desktopFolder "$($edition.Label).lnk"
+        if (Test-Path -LiteralPath $desktopShortcut -PathType Leaf) { Remove-Item -LiteralPath $desktopShortcut -Force }
+        if (-not $NoStartMenu) {
+            $startShortcut = Join-Path $startFolder "$($edition.Label).lnk"
+            if (Test-Path -LiteralPath $startShortcut -PathType Leaf) { Remove-Item -LiteralPath $startShortcut -Force }
+        }
+    }
+}
+
 $sourceIcon = [System.Drawing.Icon]::ExtractAssociatedIcon($bricscad)
 if (-not $sourceIcon) { throw "Could not extract the BricsCAD icon from '$bricscad'." }
 try {
@@ -237,10 +252,9 @@ try {
         # The label must stay short on the desktop, exactly as requested.
         $name = $edition.Label
         if ($selectedDesktopEditions -contains $edition.Label) {
-            New-Shortcut -Path (Join-Path ([Environment]::GetFolderPath('Desktop')) "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD as $($edition.Level) with the $($edition.Workspace) workspace."
+            New-Shortcut -Path (Join-Path $desktopFolder "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD as $($edition.Level) with the $($edition.Workspace) workspace."
         }
-        if (-not $NoStartMenu) {
-            $startFolder = Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\BricsCAD Launcher'
+        if ((-not $NoStartMenu) -and ($selectedDesktopEditions -contains $edition.Label)) {
             New-Item -ItemType Directory -Force -Path $startFolder | Out-Null
             New-Shortcut -Path (Join-Path $startFolder "$name.lnk") -Target $bricscad -Arguments $arguments -IconPath $iconPath -Description "Launch BricsCAD as $($edition.Level) with the $($edition.Workspace) workspace."
         }

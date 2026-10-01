@@ -1,8 +1,8 @@
 # BricsCAD Edition Launcher
 
-Run `Install.cmd`. During installation, the operator chooses which Desktop
-shortcuts to create: individual editions, all five, or none. All five shortcuts
-are created in Start Menu > Programs > BricsCAD Launcher:
+Run `Install.cmd`. During installation, the operator chooses which shortcuts to
+create: individual editions, all five, or none. The Start Menu matches the
+Desktop selection:
 
 | Shortcut | BricsCAD startup level | Workspace |
 | --- | --- | --- |
@@ -19,7 +19,7 @@ If BricsCAD is installed elsewhere, run PowerShell from this folder and use:
 .\Install-BricsCAD-Shortcuts.ps1 -BricscadExe 'D:\Apps\BricsCAD V26\bricscad.exe'
 ```
 
-For unattended deployment, supply the Desktop selection explicitly:
+For unattended deployment, supply the shortcut selection explicitly:
 
 ```powershell
 .\Install-BricsCAD-Shortcuts.ps1 -DesktopEditions Lite,BIM,Ult
